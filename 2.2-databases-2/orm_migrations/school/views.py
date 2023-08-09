@@ -7,9 +7,12 @@ from .models import Student
 def students_list(request):
     template = 'school/students_list.html'
     context = {}
+    persons = Student.objects.order_by('name').prefetch_related('teachers')
+    return render(request, template, {'object_list': persons})
 
-    # используйте этот параметр для упорядочивания результатов
-    # https://docs.djangoproject.com/en/2.2/ref/models/querysets/#django.db.models.query.QuerySet.order_by
-    ordering = 'group'
 
-    return render(request, template, context)
+#    Без prefetch_related:
+# http://127.0.0.1:8000/  6 запросов к БД
+
+#    C prefetch_related:
+# http://127.0.0.1:8000/  4 запроса к БД
